@@ -24,12 +24,28 @@ const Statistics = (props) => {
   return (
     <>
       <h1>Statistics</h1>
-      <StatisticsLine title = "good" count = {good}/>
-      <StatisticsLine title = "neutral" count = {neutral}/>
-      <StatisticsLine title = "bad" count = {bad}/>
-      <StatisticsLine title = "all" count = {total}/>
-      <StatisticsLine title = "average" count = {average}/>
-      <StatisticsLine title = "positive" count = {`${positive}%`}/>
+      <table>
+        <tbody>          
+          <tr>
+            <td><StatisticsLine title = "good" count = {good}/></td>
+          </tr>
+          <tr>
+            <td><StatisticsLine title = "neutral" count = {neutral}/></td>
+          </tr>
+          <tr>
+            <td><StatisticsLine title = "bad" count = {bad}/></td>
+          </tr>
+          <tr>
+            <td><StatisticsLine title = "all" count = {total}/></td>
+          </tr>
+          <tr>
+            <td><StatisticsLine title = "average" count = {average}/></td>
+          </tr>
+          <tr>
+            <td><StatisticsLine title = "positive" count = {`${positive}%`}/></td>
+          </tr>
+        </tbody>
+      </table>
     </>
   )
 }
