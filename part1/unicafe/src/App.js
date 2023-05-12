@@ -2,11 +2,37 @@ import { useState } from "react";
 
 const Button = ({handleClick, title}) => (<button onClick = {handleClick}>{title}</button>)
 
-const ShowCounts = ({title, count}) => (
+const StatisticsLine = ({title, count}) => (
   <>
     <p>{title} {count}</p>
   </>
 )
+
+const Statistics = (props) => {
+
+  const {good, bad, neutral, average, positive, total} = props;
+
+  if(total === 0){
+    return (
+      <>
+        <h1>Statistics</h1>
+        <p>No feedback Given.</p>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <h1>Statistics</h1>
+      <StatisticsLine title = "good" count = {good}/>
+      <StatisticsLine title = "neutral" count = {neutral}/>
+      <StatisticsLine title = "bad" count = {bad}/>
+      <StatisticsLine title = "all" count = {total}/>
+      <StatisticsLine title = "average" count = {average}/>
+      <StatisticsLine title = "positive" count = {`${positive}%`}/>
+    </>
+  )
+}
 
 const App = () => {
 
@@ -16,7 +42,7 @@ const App = () => {
   const [total, setTotal] = useState(0);
   const [average, setAverage] = useState(0);
   const [positive, setPositive] = useState(0);
-  
+
   const handleClick = (value, hook) => {
     hook(value + 1);
     const newGood = good;
@@ -35,13 +61,14 @@ const App = () => {
       <Button handleClick={()=>{handleClick(good, setGood)}} title = "Good"/>
       <Button handleClick={()=>{handleClick(neutral, setNeutral)}} title = "Neutral"/>
       <Button handleClick={()=>{handleClick(bad, setBad)}} title = "Bad"/>
-      <h1>Statistics</h1>
-      <ShowCounts title = "good" count = {good}/>
-      <ShowCounts title = "neutral" count = {neutral}/>
-      <ShowCounts title = "bad" count = {bad}/>
-      <ShowCounts title = "all" count = {total}/>
-      <ShowCounts title = "average" count = {average}/>
-      <ShowCounts title = "positive" count = {`${positive}%`}/>
+      <Statistics 
+        good = {good}
+        bad = {bad}
+        neutral = {neutral}
+        total = {total}
+        average = {average}
+        positive = {positive}
+      />
     </div>
   );
 }
