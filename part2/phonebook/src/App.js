@@ -10,7 +10,6 @@ const App = () => {
 		{ name: 'Dan Abramov', number: '12-43-234345', id: 3 },
 		{ name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
 	]);
-	//const [filterResults, setFilterResults] = useState(undefined);
 
 	const [filter, setFilter] = useState('');
 	const [newName, setNewName] = useState('');
