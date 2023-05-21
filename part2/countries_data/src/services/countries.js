@@ -7,8 +7,8 @@ const getAll = () => {
     return response.then((res) => res.data);
 }
 
-const getOne = () => {
-    const response = axios.get(`${baseURL}/all`);
+const getOne = (country) => {
+    const response = axios.get(`${baseURL}/name/${country}`);
     return response.then((res) => res.data);
 }
 

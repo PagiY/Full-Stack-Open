@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import countriesService from './services/countries';
 
+import Countries from './components/Countries';
 import Country from './components/Country';
 
 const App = () => {
@@ -32,6 +33,14 @@ const App = () => {
 		setFilter(e.target.value);
 	}
 
+	const showCountry = (country) => {
+		countriesService
+			.getOne(country)
+			.then((data) => {
+				setResults(data);
+			})
+	}
+
 	return (
 			<div className="App">
 				<div>
@@ -47,11 +56,7 @@ const App = () => {
 						results.length === 1 ? 
 						<Country country = {results[0]}/>
 						: 
-						<ul>
-							{
-								results.map((result) => <li key = {result.altSpellings[0]}>{result.name.common}</li>)
-							}
-						</ul>	
+						<Countries countries = {results} handleShowCountry = {showCountry}/>
 					}
 				</div>
 			</div>
