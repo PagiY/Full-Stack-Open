@@ -3,14 +3,18 @@ import { useState } from "react";
 const Button = ({handleClick, title}) => (<button onClick = {handleClick}>{title}</button>)
 
 const StatisticsLine = ({title, count}) => (
-  <>
-    <p>{title} {count}</p>
-  </>
+  <tr>
+    <td>{title} {count}</td>
+  </tr>
 )
 
 const Statistics = (props) => {
 
-  const {good, bad, neutral, average, positive, total} = props;
+  const {good, bad, neutral} = props;
+
+  const total = good + bad + neutral;
+  const average = (good - bad) / total;
+  const positive = (good / total) * 100;
 
   if(total === 0){
     return (
@@ -26,24 +30,12 @@ const Statistics = (props) => {
       <h1>Statistics</h1>
       <table>
         <tbody>          
-          <tr>
-            <td><StatisticsLine title = "good" count = {good}/></td>
-          </tr>
-          <tr>
-            <td><StatisticsLine title = "neutral" count = {neutral}/></td>
-          </tr>
-          <tr>
-            <td><StatisticsLine title = "bad" count = {bad}/></td>
-          </tr>
-          <tr>
-            <td><StatisticsLine title = "all" count = {total}/></td>
-          </tr>
-          <tr>
-            <td><StatisticsLine title = "average" count = {average}/></td>
-          </tr>
-          <tr>
-            <td><StatisticsLine title = "positive" count = {`${positive}%`}/></td>
-          </tr>
+          <StatisticsLine title = "good" count = {good}/>
+          <StatisticsLine title = "neutral" count = {neutral}/>
+          <StatisticsLine title = "bad" count = {bad}/>
+          <StatisticsLine title = "all" count = {total}/>
+          <StatisticsLine title = "average" count = {average}/>
+          <StatisticsLine title = "positive" count = {`${positive}%`}/>
         </tbody>
       </table>
     </>
@@ -55,20 +47,9 @@ const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [average, setAverage] = useState(0);
-  const [positive, setPositive] = useState(0);
 
   const handleClick = (value, hook) => {
     hook(value + 1);
-    const newGood = good;
-    const newBad = bad;
-    const newTotal = total + 1
-    const newAvg = (newGood - newBad) / newTotal;
-    const newPositive = newGood / newTotal;
-    setTotal(newTotal);
-    setAverage(newAvg);
-    setPositive(newPositive);
   }
 
   return (
@@ -81,9 +62,6 @@ const App = () => {
         good = {good}
         bad = {bad}
         neutral = {neutral}
-        total = {total}
-        average = {average}
-        positive = {positive}
       />
     </div>
   );
