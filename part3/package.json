@@ -1,0 +1,16 @@
+{
+  "name": "part3",
+  "version": "0.0.1",
+  "description": "Node.js and Express BE for phonebook app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "author": "PagiY",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
