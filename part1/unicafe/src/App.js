@@ -48,8 +48,8 @@ const App = () => {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
-  const handleClick = (value, hook) => {
-    hook(value + 1);
+  const handleClick = (value, fn) => {
+    fn(value + 1);
   }
 
   return (
