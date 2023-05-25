@@ -1,36 +1,85 @@
 
-import Course from "./components/Course";
+const Header = (props) => {
+  return(
+    <>
+      <h1>{props.course.name}</h1>
+    </>
+  )
+}
 
+const Content = (props) => {
+  return(
+    <>
+      {
+        props.parts.map(part => <Part key = {part.id} 
+                                  part = {part.name} 
+                                  exercises = {part.exercises}
+                                />
+                        )
+      }
+    </>
+  )
+}
 
+const Total = (props) => {
+  const total = props.parts.reduce((sum, part) => {
+    return sum + part.exercises;
+  }, 0);
+
+  return(
+    <b>
+      Number of exercises {total}
+    </b>
+  )
+}
+
+const Part = (props) => {
+  return(
+    <>
+      <p>{props.part} {props.exercises}</p>
+    </>
+  )
+}
+
+const Course = (props) => {
+
+  return(
+    <>
+      <Header course = {props.course}/>
+      <Content parts = {props.course.parts} />
+      <Total  parts = {props.course.parts}/>
+    </>
+  )
+}
 const App = () => {
 
   const courses = [
     {
+      name: 'Half Stack application development',
       id: 1,
-      name: "Half Stack application development",
       parts: [
-        { 
-          id: 1,
+        {
           name: 'Fundamentals of React',
-          exercises: 10
+          exercises: 10,
+          id: 1
         },
         {
-          id: 2,
           name: 'Using props to pass data',
-          exercises: 7
+          exercises: 7,
+          id: 2
         },
         {
-          id: 3,
           name: 'State of a component',
-          exercises: 14
+          exercises: 14,
+          id: 3
         },
         {
-          id: 4,
           name: 'Redux',
-          exercises: 11
+          exercises: 11,
+          id: 4
         }
       ]
-    },
+    }, 
     {
       name: 'Node.js',
       id: 2,
@@ -49,8 +98,11 @@ const App = () => {
     }
   ]
 
-  return <>{courses.map((course) => <Course key = {course.id} course = {course}/>)}</>
-  
+  return(
+    <div>
+      {courses.map((course) => <Course key = {course.id} course = {course}/>)}
+    </div>
+  )
 }
 
 export default App;
