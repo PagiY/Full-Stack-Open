@@ -1,0 +1,5 @@
+GET https://phonebook-app-pau.fly.dev/api/persons
+
+###
+
+GET https://phonebook-app-pau.fly.dev/api/persons/1
