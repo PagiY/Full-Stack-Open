@@ -1,17 +1,19 @@
-const Persons = ({persons, filter}) => {
+const Persons = ({persons, filter, onDelete}) => {
 
-    const getFilteredResults = () => {
-		const filtered = persons.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()));
-		return filtered.map((person) =>  <li key = {person.name}>{person.name} {person.number}</li>)
-	}
+    const getFilteredResults = () => (persons.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase())))
     
+    const getPersons = (personData) => (personData.map((data) => <li key = {data.name}>
+                                                                    {data.name} {data.number} 
+                                                                    <button onClick = {() => {onDelete(data.id)}}>delete</button>
+                                                                </li>)
+                                        )
     return (
         <ul>
         {	
             filter === '' ? 
-                persons.map((person) => <li key = {person.name}>{person.name} {person.number}</li>)
+                getPersons(persons)
             : 	
-                getFilteredResults()
+                getPersons(getFilteredResults())
         }
         </ul>
     )
