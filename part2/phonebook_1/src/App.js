@@ -38,6 +38,12 @@ const App = () => {
 
 		e.preventDefault();
 
+		if(newName === '' || newNumber === ''){
+			setErrorMessage(`Name and Phone Number must not be empty.`);
+			setTimeout(() => {setErrorMessage(null)}, 5000);
+			return;
+		}
+
 		const newPerson = {
 			name: newName,
 			number: newNumber
