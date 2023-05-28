@@ -39,6 +39,7 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
+    
     response.json(persons);
 })
 
