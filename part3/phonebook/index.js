@@ -1,6 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
+const Persons = require('./models/persons');
 
 app.use(express.json());
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :type'));
@@ -39,8 +41,9 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-    
-    response.json(persons);
+    Persons.find({}).then(persons => {
+        response.json(persons);
+    })
 })
 
 app.get('/info', (request, response) => {
@@ -50,21 +53,23 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id);
-    const person = persons.find(person => person.id === id);
+    //const id = Number(request.params.id);
+    // const person = persons.find(person => person.id === id);
     
-    if(!person){
-        response.status(404).end();
-    }
-
-    response.json(person);
+    // if(!person){
+    //     response.status(404).end();
+    // }
+    Persons.findById(request.params.id).then(person => {
+        response.json(person);
+    })
+    
 })
 
-const generateID = () => {
-    const min = Math.ceil(1);
-    const max = Math.floor(10000);
-    return persons.length <= 0 ? 0 : Math.floor(Math.random() * (max - min + 1) + min);
-}
+// const generateID = () => {
+//     const min = Math.ceil(1);
+//     const max = Math.floor(10000);
+//     return persons.length <= 0 ? 0 : Math.floor(Math.random() * (max - min + 1) + min);
+// }
 
 app.post('/api/persons', (request, response) => {
     const body = request.body;
@@ -76,31 +81,37 @@ app.post('/api/persons', (request, response) => {
         return;
     }
 
-    const findPerson = persons.find(p => p.name === body.name);
+    // const findPerson = Persons.find({name: body.name})
+    //                           .then(person => response.json(person))
 
-    if(findPerson){
-        response.status(404).json({
-            error: "name must be unique"
-        });
-        return;
-    }
+    // if(findPerson){
+    //     response.status(404).json({
+    //         error: "name must be unique"
+    //     });
+    //     return;
+    // }
 
-    const person = {
+    const person = new Persons({
         name: body.name,
         number: body.number,
-        id: generateID(),
-    }
+    })
 
-    persons = persons.concat(person);
-
-    response.json(person);
+    person.save()
+          .then((savedPerson) => {
+            console.log(`${savedPerson} added to database`);
+            response.json(savedPerson);
+          })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id);
-    persons = persons.filter(person => person.id !== id);
-    console.log(persons);
-    response.status(204).end();
+    // const id = Number(request.params.id);
+    // persons = persons.filter(person => person.id !== id);
+    // console.log(persons);
+    Persons.findOneAndDelete(request.params.id)
+           .then(() => {
+                response.status(204).end();
+           })
+    
 })
 
 const PORT = process.env.PORT || 3001;
