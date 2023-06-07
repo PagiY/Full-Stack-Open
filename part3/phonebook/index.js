@@ -41,28 +41,32 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-    Persons.find({}).then(persons => {
-        response.json(persons);
-    })
+    Persons.find({})
+           .then(persons => {
+                response.json(persons);
+            })
 })
 
 app.get('/info', (request, response) => {
-    const phonebookCount = persons.length;
-    const date = new Date();
-    response.send(`<p>Phonebook has info for ${phonebookCount} people.</p><p>${date}</p>`);
+    Persons.find({})
+           .then(persons => {
+                const date = new Date();
+                response.send(`<p>Phonebook has info for ${persons.length} people.</p><p>${date}</p>`);
+            })
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     //const id = Number(request.params.id);
     // const person = persons.find(person => person.id === id);
     
     // if(!person){
     //     response.status(404).end();
     // }
-    Persons.findById(request.params.id).then(person => {
-        response.json(person);
-    })
-    
+    Persons.findById(request.params.id)
+           .then(person => {
+                response.json(person);
+            })
+           .catch(err => next(err))
 })
 
 // const generateID = () => {
@@ -107,12 +111,40 @@ app.delete('/api/persons/:id', (request, response) => {
     // const id = Number(request.params.id);
     // persons = persons.filter(person => person.id !== id);
     // console.log(persons);
-    Persons.findOneAndDelete(request.params.id)
-           .then(() => {
+    Persons.findByIdAndRemove(request.params.id)
+            .then(() => {
                 response.status(204).end();
-           })
-    
+            })
 })
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body;
+    console.log(body);
+
+    const newPerson = {
+        name: body.name,
+        number: body.number,
+    }
+
+    Persons.findByIdAndUpdate(request.params.id, newPerson, {new:true})
+           .then((updatedPerson) => {
+                response.json(updatedPerson);
+           })
+           .catch((err) => console.log(err))
+})
+
+const errorHandler = (error, request, response, next) => {
+    console.log(error.message);
+    console.log(error.name);
+
+    if(error.name === 'CastError'){
+        return response.status(404).end();
+    }
+
+    next(error);
+}
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () =>{ 
