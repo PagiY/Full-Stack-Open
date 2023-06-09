@@ -12,34 +12,6 @@ morgan.token('type', function (req, res) {
     return JSON.stringify(req.body) 
 })
 
-let persons = [
-    { 
-        "id": 1,
-        "name": "Arto Hellas", 
-        "number": "040-123456"
-    },
-    { 
-        "id": 2,
-        "name": "Ada Lovelace", 
-        "number": "39-44-5323523"
-    },
-    { 
-        "id": 3,
-        "name": "Dan Abramov", 
-        "number": "12-43-234345"
-    },
-    { 
-        "id": 4,
-        "name": "Mary Poppendieck", 
-        "number": "39-23-6423122"
-    },
-    { 
-        "id": 5,
-        "name": "Test", 
-        "number": "39-23-6423122"
-    }
-]
-
 app.get('/api/persons', (request, response) => {
     Persons.find({})
            .then(persons => {
@@ -75,36 +47,59 @@ app.get('/api/persons/:id', (request, response, next) => {
 //     return persons.length <= 0 ? 0 : Math.floor(Math.random() * (max - min + 1) + min);
 // }
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body;
 
-    if(!body.name || !body.number){
-        response.status(404).json({
-            error: "name or number is missing"
-        });
-        return;
-    }
+    // if(!body.name || !body.number){
+    //     response.status(404).json({
+    //         error: "name or number is missing"
+    //     });
+    //     return;
+    // }
 
-    // const findPerson = Persons.find({name: body.name})
-    //                           .then(person => response.json(person))
+    Persons.find({name: body.name})
+           .then(person => {
+
+                if(person.length <= 0){
+
+                    const person = new Persons({
+                                name: body.name,
+                                number: body.number,
+                            })
+                        
+                    person.save()
+                            .then((savedPerson) => {
+                                console.log(`${savedPerson} added to database`);
+                                response.json(savedPerson);
+                            })
+                            .catch((error) => next(error));
+                }
+                else{
+                    response.json(person);
+                }
+            })
+
+    // console.log(findPerson);
 
     // if(findPerson){
     //     response.status(404).json({
     //         error: "name must be unique"
     //     });
-    //     return;
     // }
-
-    const person = new Persons({
-        name: body.name,
-        number: body.number,
-    })
-
-    person.save()
-          .then((savedPerson) => {
-            console.log(`${savedPerson} added to database`);
-            response.json(savedPerson);
-          })
+    // else{
+    //     const person = new Persons({
+    //         name: body.name,
+    //         number: body.number,
+    //     })
+    
+    //     person.save()
+    //           .then((savedPerson) => {
+    //             console.log(`${savedPerson} added to database`);
+    //             response.json(savedPerson);
+    //           })
+    //           .catch((error) => next(error));
+    // }
+    
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -126,19 +121,20 @@ app.put('/api/persons/:id', (request, response, next) => {
         number: body.number,
     }
 
-    Persons.findByIdAndUpdate(request.params.id, newPerson, {new:true})
+    Persons.findByIdAndUpdate(request.params.id, newPerson, {new:true, runValidators: true, context: 'query' })
            .then((updatedPerson) => {
                 response.json(updatedPerson);
            })
-           .catch((err) => console.log(err))
+           .catch((err) => next(err))
 })
 
 const errorHandler = (error, request, response, next) => {
-    console.log(error.message);
-    console.log(error.name);
 
     if(error.name === 'CastError'){
-        return response.status(404).end();
+        return response.status(400).send({error: 'malformatted id'});
+    }
+    else if (error.name === 'ValidationError'){
+        return response.status(400).send({error: error.message});
     }
 
     next(error);
@@ -147,6 +143,7 @@ const errorHandler = (error, request, response, next) => {
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
+
 app.listen(PORT, () =>{ 
     console.log(`Listening at PORT ${PORT}`);
 });
