@@ -12,6 +12,7 @@ mongoose.connect(url)
         })
 
 const personSchema = new mongoose.Schema({
+    //schema validations
     name: {
         type: String,
         minLength: 3,
