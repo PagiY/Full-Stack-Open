@@ -11,6 +11,7 @@
   "author": "PagiY",
   "license": "MIT",
   "devDependencies": {
+    "eslint": "^8.42.0",
     "nodemon": "^2.0.22"
   },
   "dependencies": {
