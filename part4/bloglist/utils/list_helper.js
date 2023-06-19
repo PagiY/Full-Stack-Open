@@ -4,6 +4,7 @@ const dummy = (blogs) => {
 };
 
 const totalLikes = (blogs) => {
+
 	if(blogs.length <= 0){
 		return 0;
 	}
@@ -17,10 +18,23 @@ const totalLikes = (blogs) => {
 
 		return blogs.reduce(reducer, 0);
 	}
+	
+};
+
+const favoriteBlog = (blogs) => {
+
+	const faveBlog = blogs.reduce((accumulator, current) => accumulator.likes > current.likes ? accumulator : current);
+	
+	return {
+		title: faveBlog.title,
+		author: faveBlog.author,
+		likes: faveBlog.likes
+	};
 };
 
 module.exports = {
 	dummy,
-	totalLikes
+	totalLikes,
+	favoriteBlog
 };
 
